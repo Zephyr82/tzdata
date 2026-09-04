@@ -1,0 +1,25 @@
+---
+
+- name: Include installation tasks
+  ansible.builtin.include_tasks:
+    file: installation.yml
+  tags:
+    - installation
+
+- name: Include tasks for setting locales
+  ansible.builtin.include_tasks:
+    file: locales.yml
+  tags:
+    - locales
+
+- name: Include tasks for setting timezone with timedatectl
+  ansible.builtin.include_tasks:
+    file: timedatectl.yml
+  tags:
+    - timedatectl
+
+- name: Include tasks for setting timezone with debconf
+  ansible.builtin.include_tasks:
+    file: date.yml
+  tags:
+    - date

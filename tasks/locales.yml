@@ -1,0 +1,40 @@
+---
+
+- name: Configure locales to be generated
+  ansible.builtin.debconf:
+    name: locales
+    question: locales/locales_to_be_generated
+    value: de_DE.UTF-8 UTF-8, en_US.UTF-8 UTF-8
+    vtype: multiselect
+  become: true
+  notify:
+    - Rebuild locales database
+  tags:
+    - locales
+
+- name: Configure default environment locale
+  ansible.builtin.debconf:
+    name: locales
+    question: locales/default_environment_locale
+    value: de_DE.UTF-8
+    vtype: select
+  become: true
+  notify:
+    - Rebuild locales database
+  tags:
+    - locales
+
+- name: Activate locales in /etc/locale.gen
+  ansible.builtin.lineinfile:
+    dest: /etc/locale.gen
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+    state: "{{ item.state }}"
+  with_items:
+    - { regexp: '^#? ?de_DE.UTF-8 UTF-8', line: 'de_DE.UTF-8 UTF-8', state: present }
+    - { regexp: '^#? ?en_US.UTF-8 UTF-8', line: 'en_US.UTF-8 UTF-8', state: present }
+  become: true
+  notify:
+    - Rebuild locales database
+  tags:
+    - locales

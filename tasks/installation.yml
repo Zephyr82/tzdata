@@ -1,0 +1,9 @@
+---
+
+- name: Ensure, that tzdata and locales is installed
+  ansible.builtin.apt:
+    name: tzdata, locales
+    state: present
+  become: true
+  tags:
+    - installation

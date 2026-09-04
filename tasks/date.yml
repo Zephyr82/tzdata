@@ -1,0 +1,44 @@
+---
+
+- name: Reconfigure tzdata Area to Europe
+  ansible.builtin.debconf:
+    name: tzdata
+    question: tzdata/Areas
+    value: Europe
+    vtype: select
+  become: true
+  tags:
+    - date
+
+- name: Reconfigure tzdata Zones/Europe to Berlin
+  ansible.builtin.debconf:
+    name: tzdata
+    question: tzdata/Zones/Europe
+    value: Berlin
+    vtype: select
+  become: true
+  tags:
+    - date
+
+- name: Reconfigure tzdata Zones/Etc to UTC
+  ansible.builtin.debconf:
+    name: tzdata
+    question: tzdata/Zones/Etc
+    value: UTC
+    vtype: select
+  become: true
+  tags:
+    - date
+
+- name: Verify timezone configuration with date command
+  ansible.builtin.command: date
+  register: date_status
+  changed_when: false
+  tags:
+    - date
+
+- name: Display date command output
+  ansible.builtin.debug:
+    msg: "{{ date_status.stdout_lines }}"
+  tags:
+    - date
